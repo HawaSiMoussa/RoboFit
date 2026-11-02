@@ -1,26 +1,53 @@
+from pathlib import Path
+
 import cv2
 import numpy as np
 
 
 def erkenne_farbe(bild):
-    """Erwartet ein BGR-Bild, z. B. von cv2.imread()."""
+    """Erkennt die dominante Farbe in einem BGR-Bild."""
     if bild is None or bild.size == 0:
         return "Keine eindeutige Farbe erkannt"
 
     hsv = cv2.cvtColor(bild, cv2.COLOR_BGR2HSV)
 
-    # Grenzen jeweils als (H, S, V).
-    # Rot liegt an beiden Enden der Farbtonskala.
+    # Grenzen jeweils als (Farbton, Sättigung, Helligkeit).
+    # Die Bereiche überschneiden sich nicht.
     bereiche = {
         "Rot": [
             ((0, 80, 50), (10, 255, 255)),
             ((170, 80, 50), (179, 255, 255)),
         ],
+        "Orange": [
+            ((11, 80, 50), (19, 255, 255)),
+        ],
         "Gelb": [
             ((20, 80, 50), (35, 255, 255)),
         ],
+        "Grün": [
+            ((36, 80, 50), (84, 255, 255)),
+        ],
+        "Türkis": [
+            ((85, 80, 50), (99, 255, 255)),
+        ],
         "Blau": [
             ((100, 80, 50), (130, 255, 255)),
+        ],
+        "Lila": [
+            ((131, 80, 50), (154, 255, 255)),
+        ],
+        "Pink": [
+            ((155, 80, 50), (169, 255, 255)),
+        ],
+        "Schwarz": [
+            ((0, 0, 0), (179, 255, 49)),
+        ],
+        "Weiß": [
+            ((0, 0, 200), (179, 39, 255)),
+        ],
+        "Grau": [
+            ((0, 0, 50), (179, 39, 199)),
+            ((0, 40, 50), (179, 79, 255)),
         ],
     }
 
@@ -47,14 +74,21 @@ def erkenne_farbe(bild):
     if anzahl[erste] < gesamtpixel * 0.15:
         return "Keine eindeutige Farbe erkannt"
 
-    # Die stärkste Farbe muss deutlich häufiger sein als die zweite.
+    # Die stärkste Farbe muss mindestens 1,5-mal so häufig sein
+    # wie die zweitstärkste Farbe.
     if anzahl[erste] < anzahl[zweite] * 1.5:
         return "Keine eindeutige Farbe erkannt"
 
     return erste
 
 
-# Wird nur ausgeführt, wenn diese Datei direkt gestartet wird.
 if __name__ == "__main__":
-    bild = cv2.imread("testbild.jpg")
-    print(erkenne_farbe(bild))
+    # Das Bild wird im gleichen Ordner wie diese Python-Datei gesucht.
+    bildpfad = Path(__file__).resolve().parent / "testbild.jpg"
+
+    bild = cv2.imread(str(bildpfad))
+
+    if bild is None:
+        print(f"Bild konnte nicht geladen werden: {bildpfad}")
+    else:
+        print(f"Ergebnis: {erkenne_farbe(bild)}")
