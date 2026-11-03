@@ -23,3 +23,8 @@ def open_camera(camera_index=0):
         print("Tipp: Kamera Erlaubnis fürr das Terminal prüfen.")
         # und geben None zurück 
         return None
+
+    # Wenn alles gut ist, geben wir das Kamera Objekt zurück
+    return cap
+
+
