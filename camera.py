@@ -5,19 +5,18 @@
 #   3. Das Live Bild wird in einem Fenster anzeigen
 #   4. Fehlermeldung, falls die Kamera nicht geht 
 
-
 # cv2 ist OpenCV und es wird impotiert 
 import cv2
 
 # 1 Kamera wird geöffnet 
 def open_camera(camera_index=0):
-    cap = cv2.VideoCapture(camera_index)
+    camera = cv2.VideoCapture(camera_index)
     # VideoCapture ist das OpenCV Objekt das die Kamera steuert.
-        # Wir speichern es in der Variable "cap"
+        # Wir speichern es in der Variable "camera"
 
     # isOpened() fragt: "Ist die Kamera wirklich offen?" -> True oder False.
     # "not" dreht das um: Wenn die Kamera NICHT offen ist, ...
-    if not cap.isOpened():
+    if not camera.isOpened():
         # geben wir eine Fehlermeldung aus
         print("FEHLER: Kamera konnte nicht geöffnet werden.")
         print("Tipp: Kamera Erlaubnis fürr das Terminal prüfen.")
@@ -25,17 +24,17 @@ def open_camera(camera_index=0):
         return None
 
     # Wenn alles gut ist, geben wir das Kamera Objekt zurück
-    return cap
+    return camera
 
 
 # 2. Einzelne Bilder (Frames) von der Kamera werden geholt
 # Diese Funktion bekommt die offene Kamera (cap) und gibt EIN Bild zurück 
 # Genau diese Funktion benutzt spätere die Farberkennung von David
-def get_frame(cap):
-    # cap.read() macht ein Foto und gibt zwei Dinge zurück:
+def get_frame(camera):
+    # camera.read() macht ein Foto und gibt zwei Dinge zurück:
     #   success = True/False... also  hat es geklappt?
     #   frame   = das Bild selbst in form von eine Tabelle aus Zahlen ein NumPy-Array
-    success, frame = cap.read()
+    success, frame = camera.read()
 
     # Wenn es nicht geklappt hat dann fehlermedlung 
     if not success:
@@ -52,9 +51,9 @@ def get_frame(cap):
 # process_frame=None heisst ---> Man KANN eine Funktion mitgeben (z.B. die
 # Farberkennung)
 def show_live(process_frame=None, camera_index=0):
-    cap = open_camera(camera_index)
+    camera = open_camera(camera_index)
 
-    if cap is None:
+    if camera is None:
         return
 
     print("Kamera läuft. 'q' = Beenden, 's' = Foto machen.")
@@ -63,7 +62,7 @@ def show_live(process_frame=None, camera_index=0):
     bild_nummer = 0
 
     while True:
-        frame = get_frame(cap)
+        frame = get_frame(camera)
 
         if frame is None:
             break
@@ -89,7 +88,7 @@ def show_live(process_frame=None, camera_index=0):
             cv2.imwrite(dateiname, frame)
             print(f"Foto gespeichert: {dateiname}")
 
-    cap.release()
+    camera.release()
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
