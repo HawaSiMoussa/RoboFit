@@ -48,3 +48,49 @@ def get_frame(cap):
     return frame
 
 
+# 3. Das Live Bild wird in einem Fenster anzeigen
+# process_frame=None heisst ---> Man KANN eine Funktion mitgeben (z.B. die
+# Farberkennung)
+def show_live(process_frame=None, camera_index=0):
+    cap = open_camera(camera_index)
+
+    if cap is None:
+        return
+
+    print("Kamera läuft. 'q' = Beenden, 's' = Foto machen.")
+
+    # Zaehler, damit jedes Foto einen neuen Namen bekommt
+    bild_nummer = 0
+
+    while True:
+        frame = get_frame(cap)
+
+        if frame is None:
+            break
+
+        image_to_show = frame
+
+        if process_frame is not None:
+            result = process_frame(frame)
+            if result is not None:
+                image_to_show = result
+
+        cv2.imshow("Kamera (q = Beenden, s = Foto machen)", image_to_show)
+
+        key = cv2.waitKey(1) & 0xFF
+
+        if key == ord("q"):
+            break
+
+        # NEU: Wenn die Taste s gedrueckt wird, speichern wir ein Foto
+        if key == ord("s"):
+            bild_nummer = bild_nummer + 1
+            dateiname = f"foto_{bild_nummer}.png"
+            cv2.imwrite(dateiname, frame)
+            print(f"Foto gespeichert: {dateiname}")
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    show_live()
