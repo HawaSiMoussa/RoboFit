@@ -28,3 +28,23 @@ def open_camera(camera_index=0):
     return cap
 
 
+# 2. Einzelne Bilder (Frames) von der Kamera werden geholt
+# Diese Funktion bekommt die offene Kamera (cap) und gibt EIN Bild zurück 
+# Genau diese Funktion benutzt spätere die Farberkennung von David
+def get_frame(cap):
+    # cap.read() macht ein Foto und gibt zwei Dinge zurück:
+    #   success = True/False... also  hat es geklappt?
+    #   frame   = das Bild selbst in form von eine Tabelle aus Zahlen ein NumPy-Array
+    success, frame = cap.read()
+
+    # Wenn es nicht geklappt hat dann fehlermedlung 
+    if not success:
+        print("FEHLER: Es kam kein Bild von der Kamera.")
+        # geben wir None zurück.
+        return None
+
+    # Sonst geben wir das Bild zurück
+    # WICHTIG: OpenCV speichert Farben als BGR (Blau, Grün, Rot)
+    return frame
+
+
