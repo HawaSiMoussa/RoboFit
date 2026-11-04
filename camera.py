@@ -1,6 +1,9 @@
 
 # Schritte 
 #   1. Kamera wird geöffnet
+
+
+
 #   2. Einzelne Bilder (Frames) von der Kamera werden geholt 
 #   3. Das Live Bild wird in einem Fenster anzeigen
 #   4. Fehlermeldung, falls die Kamera nicht geht 
